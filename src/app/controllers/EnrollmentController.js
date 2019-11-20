@@ -62,7 +62,7 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Plan not exits' });
     }
 
-    const { duration, price } = plan;
+    const { duration, price, title } = plan;
 
     const end_date = addMonths(parseISO(start_date), duration);
 
@@ -70,7 +70,7 @@ class EnrollmentController {
       where: {
         student_id,
         end_date: {
-          [Op.gt]: end_date,
+          [Op.gt]: new Date(),
         },
       },
     });
@@ -79,16 +79,23 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Student already enrolled' });
     }
 
+    const total = price * duration;
+
     const enrollment = await Enrollment.create({
       student_id,
       plan_id,
       start_date: parseISO(start_date),
       end_date,
-      price: price * duration,
+      price: total,
     });
 
+    const { name, email } = student;
+
+    // Send Email
+    const send_email = { name, email, title, end_date, total };
+
     await Queue.add(InformationEmail.key, {
-      enrollment,
+      send_email,
     });
 
     return res.json(enrollment);
