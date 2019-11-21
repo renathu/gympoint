@@ -10,7 +10,7 @@ import Enrollment from '../app/models/Enrollment';
 
 import Checkin from '../app/models/Checkin';
 
-import Help_Order from '../app/models/Help_Order';
+import Help_Order from '../app/models/HelpOrder';
 
 import databaseConfig from '../config/database';
 

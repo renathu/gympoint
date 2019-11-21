@@ -1,12 +1,12 @@
-import { Model } from 'sequelize';
+import Sequelize, { Model } from 'sequelize';
 
-class Help_Order extends Model {
+class HelpOrder extends Model {
   static init(sequelize) {
     super.init(
       {
         question: Sequelize.STRING,
         answer: Sequelize.STRING,
-        answer_at: Sequelize.DATE,        
+        answer_at: Sequelize.DATE,
       },
       {
         sequelize,
@@ -21,4 +21,4 @@ class Help_Order extends Model {
   }
 }
 
-export default Help_Order;
+export default HelpOrder;

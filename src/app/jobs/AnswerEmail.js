@@ -6,7 +6,7 @@ class AnswerEmail {
   }
 
   async handle({ data }) {
-    const { send_email } = data;    
+    const { send_email } = data;
 
     await Mail.sendMail({
       to: `${send_email.name} <${send_email.email}`,

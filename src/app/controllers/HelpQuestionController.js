@@ -1,6 +1,4 @@
-import { addMonths, startOfDay, endOfDay } from 'date-fns';
-import { Op } from 'sequelize';
-import Help_Order from '../models/Help_Order';
+import Help_Order from '../models/HelpOrder';
 import Student from '../models/Student';
 
 class HelpQuestionController {
@@ -23,6 +21,35 @@ class HelpQuestionController {
     });
 
     return res.json(help_Order);
+  }
+
+  async store(req, res) {
+    const student_id = req.params.id;
+
+    const { question } = req.body;
+
+    const student = await Student.findOne({
+      where: { id: student_id },
+    });
+
+    if (!student) {
+      return res.status(400).json({ error: 'Student not exits' });
+    }
+
+    const { id, created_at } = await Help_Order.create({
+      student_id,
+      question,
+    });
+
+    const { name } = student;
+
+    return res.json({
+      id,
+      question,
+      student_id,
+      name,
+      created_at,
+    });
   }
 }
 

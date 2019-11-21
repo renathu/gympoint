@@ -1,6 +1,4 @@
-import { addMonths, startOfDay, endOfDay } from 'date-fns';
-import { Op } from 'sequelize';
-import Help_Order from '../models/Help_Order';
+import Help_Order from '../models/HelpOrder';
 import Student from '../models/Student';
 
 import AnswerEmail from '../jobs/AnswerEmail';
@@ -27,51 +25,44 @@ class HelpAnswerController {
 
     return res.json(help_Order);
   }
-  
+
   async update(req, res) {
-
-    const id = req.params.id;
-
     const { answer } = req.body;
 
     const help_Order = await Help_Order.findOne({
-      where: { id: id },
-      include: [
-        {
-          model: Student,
-          as: 'student',
-          attributes: ['id', 'name'],          
-        },
-      ],
+      where: { id: req.params.id },
     });
 
     if (!help_Order) {
       return res.status(400).json({ error: 'Question not exits' });
     }
 
-    const { id, created_at } = await Help_Order.update({
-      id,
+    const { id, student_id, question } = help_Order;
+
+    await help_Order.update({
       answer,
       answer_at: new Date(),
-    });   
+    });
+
+    const student = await Student.findByPk(student_id);
+
+    const { name, email } = student;
 
     // Send Email
-    const send_email = { help_Order.student.name, help_Order.student.email, question, answer };
+    const send_email = { name, email, question, answer };
 
     await Queue.add(AnswerEmail.key, {
       send_email,
-    }); 
+    });
 
     return res.json({
       id,
       question,
       answer,
-      help_Order.student.id,
-      help_Order.student.name,
-      created_at,
+      student_id,
+      name,
     });
   }
-  
 }
 
 export default new HelpAnswerController();

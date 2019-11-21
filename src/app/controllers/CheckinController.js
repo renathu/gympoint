@@ -1,4 +1,4 @@
-import { addMonths, startOfDay, endOfDay } from 'date-fns';
+import { subDays, startOfDay, endOfDay } from 'date-fns';
 import { Op } from 'sequelize';
 import Checkin from '../models/Checkin';
 import Student from '../models/Student';
@@ -26,7 +26,6 @@ class CheckinController {
   }
 
   async store(req, res) {
-
     const student_id = req.params.id;
 
     const student = await Student.findOne({

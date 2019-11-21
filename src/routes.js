@@ -42,5 +42,4 @@ routes.put('/help-orders/:id/answer', HelpAnswerController.update);
 routes.get('/students/:id/help-orders', HelpQuestionController.index);
 routes.post('/students/:id/help-orders', HelpQuestionController.store);
 
-
 export default routes;
